@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import com.example.sayit.daos.UserDao
 import com.example.sayit.databinding.ActivitySignInBinding
+import com.example.sayit.models.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -30,6 +32,7 @@ class signInActivity : AppCompatActivity() {
     private val RC_SIGN_IN: Int = 123
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var auth : FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         sign = ActivitySignInBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -45,7 +48,12 @@ class signInActivity : AppCompatActivity() {
         sign.signInButton.setOnClickListener(){
             signIn()
         }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        val currUser = auth.currentUser
+        updateUI(currUser)
     }
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
@@ -92,6 +100,10 @@ class signInActivity : AppCompatActivity() {
 
     private fun updateUI(firebaseUser: FirebaseUser?) {
         if(firebaseUser!=null){
+
+            val user = User(firebaseUser.uid,firebaseUser.displayName.toString(),firebaseUser.photoUrl.toString())
+            val usersDao = UserDao()
+            usersDao.addUser(user)
             val mainActivityIntent = Intent(this, MainActivity::class.java)
             startActivity(mainActivityIntent)
             finish()
