@@ -1,6 +1,8 @@
 package com.example.sayit.daos
 
 import com.example.sayit.models.User
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +12,7 @@ import kotlinx.coroutines.launch
 class UserDao {
 
     private val db = FirebaseFirestore.getInstance()
-    private val usersCollection = db.collection("users")
+    private val usersCollection = db.collection("users")          //users collection created
 
     fun addUser(user: User?){
         user?.let {
@@ -20,5 +22,9 @@ class UserDao {
             }
 
         }
+    }
+
+    fun getUserByID(uid : String) : Task<DocumentSnapshot>{
+        return usersCollection.document(uid).get()
     }
 }
