@@ -16,16 +16,15 @@ class PostDao {
     val auth = Firebase.auth                               //to find current user
 
     fun addPost(text: String) {
-        val currentUserId =
-            auth.currentUser!!.uid            //!! it ensures that auth.currentUser is 100% not null
 
         GlobalScope.launch {
+            val currentUserId = auth.currentUser!!.uid           //!! it ensures that auth.currentUser is 100% not null
             val userDao = UserDao()
-            val user = userDao.getUserByID(currentUserId).await().toObject(User::class.java)    //becuase we're getting task i.e document snapshots but not actual document, so we need to parse object to User class
+            val user = userDao.getUserByID(currentUserId).await().toObject(User::class.java)!!    //becuase we're getting task i.e document snapshots but not actual document, so we need to parse object to User class
 
             val currentTime = System.currentTimeMillis()    //returns long
-            val post = user?.let { Post(text, it,currentTime) }
-            post?.let { postCollection.document().set(it) }
+            val post = Post(text,user, currentTime)
+            postCollection.document().set(post)
         }
     }
 }

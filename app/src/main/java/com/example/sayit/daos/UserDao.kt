@@ -20,11 +20,10 @@ class UserDao {
             GlobalScope.launch { Dispatchers.IO
                 usersCollection.document(user.uid).set(it)
             }
-
         }
     }
 
-    fun getUserByID(uid : String) : Task<DocumentSnapshot>{
-        return usersCollection.document(uid).get()
+    fun getUserByID(uId : String) : Task<DocumentSnapshot>{
+        return usersCollection.document(uId).get()
     }
 }

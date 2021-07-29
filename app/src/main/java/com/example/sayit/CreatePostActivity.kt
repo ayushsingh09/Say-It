@@ -15,11 +15,14 @@ class CreatePostActivity : AppCompatActivity() {
         post = ActivityCreatePostBinding.inflate(layoutInflater)
         setContentView(post.root)
 
+        postDao = PostDao()
+
         post.postButton.setOnClickListener{
 
             val input = post.postInput.text.toString().trim()
             if(input.isNotEmpty()){
                 postDao.addPost(input)
+                finish()
             }
 
         }
